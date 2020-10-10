@@ -9,23 +9,6 @@
       <div class="d-flex align-center">
         <strong>PSPH - Electrolysis Simulator Web App</strong>
       </div>
-
-      <v-spacer></v-spacer>
-
-      <!-- <v-tooltip left>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            class="mr-0"
-            v-bind="attrs"
-            v-on="on"
-            icon
-            @click.stop="appSettings.visible = !appSettings.visible"
-          >
-            <v-icon>mdi-application-cog</v-icon>
-          </v-btn>
-        </template>
-        <span>App Settings</span>
-      </v-tooltip> -->
       
     </v-app-bar>
 
@@ -344,7 +327,7 @@
                 dark
                 absolute
                 fab
-                @click.stop="appSettings.visible = !appSettings.visible; fab = !fab; tableSettings.visible = false; inputSettings.visible = false;"
+                @click.stop="simulationControl = false; appSettings.visible = !appSettings.visible; fab = !fab; tableSettings.visible = false; inputSettings.visible = false;"
               >
                 <v-icon v-if="appSettings.visible">mdi-close</v-icon>
                 <v-icon v-else>mdi-application-cog</v-icon>
@@ -365,7 +348,7 @@
               dark
               absolute
               fab
-              @click.stop="inputSettings.visible = !inputSettings.visible;  tableSettings.visible = false; fab = !fab; appSettings.visible = false;"
+              @click.stop="simulationControl = false; inputSettings.visible = !inputSettings.visible;  tableSettings.visible = false; fab = !fab; appSettings.visible = false;"
             >
               <v-icon v-if="inputSettings.visible">mdi-close</v-icon>
               <v-icon v-else>mdi-tune</v-icon>
@@ -419,7 +402,7 @@
                   color="blue"
                   dark
                   fab
-                  @click="appSettings.visible = false; tableSettings.visible = false;"
+                  @click="simulationControl = false; appSettings.visible = false; tableSettings.visible = false;"
                 >
                   <v-icon v-if="downloadSettings.visible">mdi-close</v-icon>
                   <v-icon v-else>mdi-download</v-icon>
@@ -492,7 +475,8 @@
         <SimulatorCanvas 
           :height="650" 
           :width="appSettings.width" 
-          :particle="settings.particle" />
+          :particle="settings.particle" 
+          :runSimulation="simulationControl"/>
 
         <v-container fluid
           style="position: absolute; bottom: 0px;">
@@ -772,11 +756,10 @@ export default {
     },
     simulationControl: function(newVal){
       if (newVal === true){
-        console.log('running...');
+        this.tableSettings.items = [];
         this.runSimulation();
       }
       else {
-        console.log('stopped...');
         clearInterval(this.simulationInterval);
       }
     }
@@ -789,6 +772,10 @@ export default {
 <style>
   html {
     overflow: hidden;
+  }
+
+  body {
+    background-color: gray;
   }
 
   #mainContent {

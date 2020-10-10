@@ -51,6 +51,24 @@
                 class="offset" 
                 :config="p2Cylinder"/>
 
+            
+            <!-- Particles 2 -->
+            <v-circle 
+                ref="molecules2"
+                v-for="(molecule, index) in particles2"
+                :key="'pOneOut' + index"
+                :config="{
+                    x: molecule.x,
+                    y: molecule.y,
+                    radius: molecule.radius,
+                    opacity: 1,
+                    draggable: true,
+                    fill: '#4e4e5e',
+                    shadowColor: '#6f6f49',
+                    shadowBlur: 2,
+                }">
+            </v-circle>
+
             <!-- Phase 1 -->
             <v-shape
                 id="p1-cube"
@@ -59,8 +77,9 @@
 
             <!-- Particles -->
             <v-circle 
+                ref="molecules"
                 v-for="(molecule, index) in particles"
-                :key="index"
+                :key="'pOneIn' + index"
                 :config="{
                     x: molecule.x,
                     y: molecule.y,
@@ -71,18 +90,22 @@
                     fill: '#8e8e5e',
                     shadowColor: '#6f6f49',
                     shadowBlur: 2,
-                }"></v-circle>
+                }">
+            </v-circle>
+
         </v-layer>
     </v-stage>
   </div>
 </template>
 
 <script>
+import Konva from 'konva';
 export default {
     props: {
         width: Number,
         height: Number,
-        particle: Object
+        particle: Object,
+        runSimulation: Boolean,
     },
     data(){
         return {
@@ -92,6 +115,7 @@ export default {
                 container: 'container',
             },
             particles: [],
+            particles2: [],
             wire: {
                 sceneFunc: function(context) {
                     let x = 658, 
@@ -178,6 +202,8 @@ export default {
                     var myGradient = context.createLinearGradient(0, 0, 0, 170);
                     myGradient.addColorStop(0.5, "#6f6f49");
                     myGradient.addColorStop(1, "#838357");
+
+                    context.globalAlpha = 0.9;
 
                     context.beginPath();
                     context.moveTo(660, 220);
@@ -436,7 +462,9 @@ export default {
                 sceneFunc: function(context, shape) {
                     let x = 450, 
                         y = -50;
-                    
+
+                    context.globalAlpha = 0.8;
+
                     context.beginPath();
                     context.transform(1,0.5,0,1,0,0);
                     context.arc(x, y, 15, 0, 2 * Math.PI, false);
@@ -536,8 +564,8 @@ export default {
                 },
                 draggable: false,
             },
-
-
+            tweens1: [],
+            tweens2: [],
         }
     },
     watch: {
@@ -570,10 +598,98 @@ export default {
                 element.x = (Math.random() * this.width / this.particle.dispersion) + this.particle.xOffset
                 element.y = (Math.random() * this.height / this.particle.dispersion) + this.particle.yOffset
             })
+        },
+        'runSimulation': function(val){
+            var message = val ? 'particles running...' : 'particles stopped...';
+            console.log(message);
+            this.testRun(val);
         }
     },
     methods: {
-
+        createTweens1(){
+            let self = this;
+            if (!this.tweens1.length == 0) {
+                this.tweens1.forEach(tween => {
+                    tween.destroy();
+                });
+                this.tweens1 = [];
+                console.log('tweens destroyed...')
+            }
+            for (let n = 0; n <= this.particle.count - 1; n++){
+                let obj = this.$refs["molecules"][n].getNode();
+                this.tweens1.push(
+                    new Konva.Tween({
+                        node: obj,
+                        duration: 2,
+                        // x: Math.floor(Math.random() * 1000) * Math.sin((100 * Math.PI) / 10000) + obj.getX(),
+                        // y: Math.floor(Math.random() * 1000) * Math.sin((100 * Math.PI) / 10000) + obj.getY(),
+                        x: Math.random() + 360,
+                        y: 2 * (Math.random() * 1.5) + 215,
+                        opacity: 0,
+                        easing: Konva.Easings.EaseInOut,
+                        onFinish: function () {
+                            if (!self.runSimulation){
+                                this.reset();
+                            }
+                            else{
+                                console.log('running tween2');
+                                self.createTweens2();
+                                self.tweens2.forEach( tween => {
+                                    tween.reset();
+                                    tween.play();
+                                });
+                            }
+                        },
+                    })
+                );
+            }
+        },
+        createTweens2(){
+            // let self = this;
+            if (!this.tweens2.length == 0) {
+                this.tweens2.forEach(tween => {
+                    tween.destroy();
+                });
+                this.tweens2 = [];
+                console.log('tweens destroyed...')
+            }
+            for (let n = 0; n <= this.particle.count - 1; n++){
+                let obj = this.$refs["molecules2"][n].getNode();
+                this.tweens2.push(
+                    new Konva.Tween({
+                        node: obj,
+                        duration: 2,
+                        // x: Math.floor(Math.random() * 1000) * Math.sin((100 * Math.PI) / 10000) + obj.getX(),
+                        // y: Math.floor(Math.random() * 1000) * Math.sin((100 * Math.PI) / 10000) + obj.getY(),
+                        x: 2 * (Math.random() * 6) + 450,
+                        y: 2 * (Math.random() * 6) + 170,
+                        opacity: 0,
+                        scaleX: 0.9,
+                        scaleY: 0.9,
+                        fill: '#adee2e',
+                        shadowColor: '#6f6f49',
+                        shadowBlur: 2,
+                        easing: Konva.Easings.EaseInOut,
+                        onFinish: function () {
+                            // self.runSimulation = false;
+                        },
+                    }),
+                );
+            }
+        },
+        testRun(state){
+            if (state){
+                this.createTweens1();
+                this.tweens1.forEach( tween => {
+                    tween.reset();
+                    tween.play();
+                });
+            } else {
+                this.tweens1.forEach( tween => {
+                    tween.finish();
+                });
+            }
+        }
     },
     created(){
         
@@ -584,7 +700,14 @@ export default {
                 x: (Math.random() * this.width / 8) + this.particle.xOffset,
                 y: (Math.random() * this.height / 8) + this.particle.yOffset,
                 radius: this.particle.radius
-            })
+            });
+
+            this.particles2.push({
+                x: (Math.random() * 20) + 380,
+                y: 2 * (Math.random() * 15) + 190,
+                radius: this.particle.radius
+            });
+
         }
     }
 }
