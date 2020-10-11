@@ -1,24 +1,19 @@
-# psph-simulation-app
+# PSPH - Electrolysis Web Application
 
-## Project setup
-```
-npm install
-```
+> ## Requirements to run this locally:
+1. Install **```VSCode IDE```**
+2. Install **```Node.js```**
+3. Install **```Vue CLI```**
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+> ## How to run the simulation:
 
-### Compiles and minifies for production
-```
-npm run build
-```
+1. Download all files from this repository.
+2. Extract the downloaded zip file.
+3. Open **```VSCode```**
+4. Click **```File```** > **```Open Folder```** > Select the extraction directory
+5. Open the built-in Command-Line-Interface (CLI) or cmd/terminal by pressing **```Ctrl + ` ```** 
+6. Run **```npm install && npm run build```**
+7. Run **```npm run serve```**
+8. Click the given localhost link to run the app
 
-### Lints and fixes files
-```
-npm run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
