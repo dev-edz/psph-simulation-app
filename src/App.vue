@@ -201,8 +201,8 @@
                   class="mt-2 ml-2"
                   v-model="settings.input.pm25"
                   dense
-                  min="5"
-                  max="10"
+                  min="1"
+                  max="100"
                   hide-details
                   :thumb-size="20"
                 >
@@ -224,8 +224,8 @@
                   class="mt-2 ml-2"
                   v-model="settings.input.pm10"
                   dense
-                  min="5"
-                  max="10"
+                  min="1"
+                  max="100"
                   hide-details
                   :thumb-size="20"
                 >
@@ -247,8 +247,8 @@
                   class="mt-2 ml-2"
                   v-model="settings.input.humidity"
                   dense
-                  min="5"
-                  max="10"
+                  min="1"
+                  max="100"
                   hide-details
                   :thumb-size="20"
                 >
@@ -270,8 +270,8 @@
                   class="mt-2 ml-2"
                   v-model="settings.input.co2"
                   dense
-                  min="5"
-                  max="10"
+                  min="1"
+                  max="100"
                   hide-details
                   :thumb-size="20"
                 >
@@ -423,7 +423,13 @@
                   small
                   color="green"
                 >
-                  <v-icon>mdi-file-delimited-outline</v-icon>
+                  <download-excel 
+                    :data="tableSettings.items"
+                    worksheet="simulated-data"
+                    type="csv"
+                    :name="tableSettings.downloadName">
+                    <v-icon>mdi-file-delimited-outline</v-icon>
+                  </download-excel>
                 </v-btn>
               </template>
               <span>Download as CSV File</span>
@@ -440,14 +446,20 @@
                   small
                   color="indigo"
                 >
-                  <v-icon>mdi-file-excel-outline</v-icon>
+                  <download-excel 
+                    :data="tableSettings.items"
+                    worksheet="simulated-data"
+                    :name="tableSettings.downloadName">
+                    
+                    <v-icon>mdi-file-excel-outline</v-icon>
+                  </download-excel>
                 </v-btn>
+                
               </template>
               <span>Download as Excel File</span>
           </v-tooltip>
         </v-speed-dial>
       </div>
-
       <!-- Simulation -->
       <v-tooltip right>
         <template v-slot:activator="{ on, attrs }">
@@ -470,13 +482,82 @@
         <span v-else>Start Simulation</span>
       </v-tooltip>
 
+      <!-- Chips -->
+      <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        style="position: absolute; top: 120px; left: 220px;"
+      >
+        <v-avatar
+          left
+          class="green darken-4"
+        >
+          1
+        </v-avatar>
+        Air Filtration Process
+      </v-chip>
+      <!-- <v-chip
+        style="position: absolute; top: 120px; left: 180px;"
+      >
+        Phase 1 : Air Filtration Process
+      </v-chip> -->
+      <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        style="position: absolute; top: 40px; left: 360px;"
+      >
+        <v-avatar
+          left
+          class="green darken-4"
+        >
+          2
+        </v-avatar>
+        Humidification Process
+      </v-chip>
+      <!-- <v-chip
+        style="position: absolute; top: 40px; left: 320px;"
+      >
+        Phase 2 : Humidification Process
+      </v-chip> -->
+      <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        style="position: absolute; top: 160px; left: 900px;"
+      >
+        <v-avatar
+          left
+          class="green darken-4"
+        >
+          3
+        </v-avatar>
+        Electrochemical Process
+      </v-chip>
+      <!-- <v-chip
+        style="position: absolute; top: 160px; right: 60px;"
+      >
+        Phase 3 : Electrochemical Process
+      </v-chip> -->
+      <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        style="position: absolute; top: 260px; left: 1020px;"
+      >
+        Voltage Regulator
+      </v-chip>
+
       <v-container id="mainContent" class="px-0">
+        
         
         <SimulatorCanvas 
           :height="650" 
           :width="appSettings.width" 
           :particle="settings.particle" 
-          :runSimulation="simulationControl"/>
+          :runSimulation="simulationControl"
+          :duration="settings.particleSimulation.duration"/>
 
         <v-container fluid
           style="position: absolute; bottom: 0px;">
@@ -604,7 +685,8 @@ export default {
         items: [],
         options: {
           itemsPerPage: -1,
-        }
+        },
+        downloadName: '',
       },
       downloadSettings: {
         visible: false,
@@ -701,7 +783,7 @@ export default {
           humidityBefore: self.simulationParameters[0].parameters[2].val,
           humidityAfter: self.simulationParameters[2].parameters[2].val,
           powerOutput: self.simulationParameters[3].parameters[0].val
-        })
+        });
         i++;
         console.log(i, oldValPM25);
       }, 1000);
@@ -761,8 +843,9 @@ export default {
       }
       else {
         clearInterval(this.simulationInterval);
+        this.tableSettings.downloadName = 'esimul_' + String(new Date().getTime()) + '.xls';
       }
-    }
+    },
   },
   mounted() {
   }
@@ -772,10 +855,6 @@ export default {
 <style>
   html {
     overflow: hidden;
-  }
-
-  body {
-    background-color: gray;
   }
 
   #mainContent {
