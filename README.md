@@ -1,10 +1,11 @@
 # PSPH - Electrolysis Web Application
 
-## Requirements to run this locally:
+> ## Requirements to run this locally:
 1. Install **```VSCode IDE```**
 2. Install **```Node.js```**
 3. Install **```Vue CLI```**
-## How to run the simulation:
+
+> ## How to run the simulation:
 
 1. Download all files from this repository.
 2. Extract the downloaded zip file.
