@@ -11,15 +11,15 @@
       </svg> -->
     <v-stage :config="config">
         <v-layer>
-            
-            <v-path 
+
+            <!-- <v-path 
                 id="path"
                 class="offset" 
                 ref="path"
                 :config="{
                     data: 'M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37'
                 }"
-            />
+            /> -->
 
             <!-- Regulator -->
             <v-shape
@@ -32,7 +32,31 @@
             <v-shape
                 id="p3-innerbox"
                 class="offset" 
-                :config="p3Plates"/>
+                :config="p3Plate2"/>
+
+            <!-- Particles 3 -->
+            <v-circle 
+                ref="molecules3"
+                v-for="(molecule, index) in particles3"
+                :key="'pThree' + index"
+                :config="{
+                    x: molecule.x,
+                    y: molecule.y,
+                    id: index,
+                    radius: molecule.radius,
+                    opacity: 1,
+                    draggable: true,
+                    fill: 'yellow',
+                    shadowColor: '#6f6f49',
+                    shadowBlur: 2,
+                }">
+            </v-circle>
+
+           
+            <v-shape
+                id="p3-innerbox"
+                class="offset" 
+                :config="p3Plate1"/>
 
             <!-- Phase 3 - Inner Box -->
             <v-shape
@@ -114,6 +138,64 @@
         </v-layer>
     </v-stage>
 
+    <!-- Phase 1 Label -->
+    <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        style="position: absolute; top: 120px; left: 80px;"
+    >
+        <v-avatar
+        left
+        class="green darken-4"
+        >
+        1
+        </v-avatar>
+        Air Filtration Process
+    </v-chip>
+
+    <!-- Phase 2 Label -->
+    <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        style="position: absolute; top: 40px; left: 240px;"
+    >
+        <v-avatar
+            left
+            class="green darken-4"
+        >
+            2
+        </v-avatar>
+        Humidification Process
+    </v-chip>
+
+    <!-- Phase 3 Label -->
+    <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        style="position: absolute; top: 160px; left: 760px;"
+    >
+        <v-avatar
+            left
+            class="green darken-4"
+        >
+            3
+        </v-avatar>
+        Electrochemical Process
+    </v-chip>
+
+    <!-- Regulator Label -->
+    <v-chip
+        class="ma-2"
+        color="green"
+        text-color="white"
+        style="position: absolute; top: 240px; left: 840px;"
+      >
+        Voltage Regulator
+    </v-chip>
+
   </div>
 </template>
 
@@ -138,6 +220,7 @@ export default {
             },
             particles: [],
             particles2: [],
+            particles3: [],
             wire: {
                 sceneFunc: function(context) {
                     let x = 658, 
@@ -295,15 +378,15 @@ export default {
                 },
                 draggable: false,
             },
-            p3Plates: {
+            p3Plate1: {
                 sceneFunc: function(context, shape) {
                     let x = 650 + 10, 
                         y = 340 - 5, 
                         wx = 60, 
                         wy = 5, 
-                        h = 80,
-                        x2 = 650 + 80,
-                        y2 = 340 - 40;
+                        h = 80;
+                        // x2 = 650 + 80,
+                        // y2 = 340 - 40;
 
                     context.globalAlpha = 1;
 
@@ -344,6 +427,21 @@ export default {
                     context.fill();
                     context.fillStrokeShape(shape);
 
+                    
+                },
+                draggable: false,
+            },
+            p3Plate2: {
+                sceneFunc: function(context, shape) {
+                    let 
+                        wx = 60, 
+                        wy = 5, 
+                        h = 80,
+                        x2 = 650 + 80,
+                        y2 = 340 - 40;
+
+                    context.globalAlpha = 1;
+
                     // left face 2
                     context.beginPath();
                     context.moveTo(x2, y2);
@@ -380,6 +478,8 @@ export default {
                     context.stroke();
                     context.fill();
                     context.fillStrokeShape(shape);
+
+                    
                 },
                 draggable: false,
             },
@@ -655,7 +755,6 @@ export default {
                             }
                             else{
                                 console.log('running tween2');
-                                self.createTweens2();
                                 self.tweens2.forEach( tween => {
                                     tween.reset();
                                     tween.play();
@@ -667,7 +766,7 @@ export default {
             }
         },
         createTweens2(){
-            // let self = this;
+            let self = this;
             if (!this.tweens2.length == 0) {
                 this.tweens2.forEach(tween => {
                     tween.destroy();
@@ -693,15 +792,22 @@ export default {
                         shadowBlur: 2,
                         easing: Konva.Easings.EaseInOut,
                         onFinish: function () {
-                            
+                            self.tweens1.forEach( tween => {
+                                tween.reset();
+                                tween.play();
+                            });
                         },
                     }),
                 );
             }
         },
+        createTween3(){
+
+        },
         testRun(state){
             if (state){
                 this.createTweens1();
+                this.createTweens2();
                 this.tweens1.forEach( tween => {
                     tween.reset();
                     tween.play();
@@ -744,6 +850,12 @@ export default {
             this.particles2.push({
                 x: (Math.random() * 20) + 380,
                 y: 2 * (Math.random() * 15) + 190,
+                radius: this.particle.radius
+            });
+
+            this.particles3.push({
+                x: (Math.random() * 50) + 660,
+                y: 2 * (Math.random() * 40) + 220,
                 radius: this.particle.radius
             });
         }

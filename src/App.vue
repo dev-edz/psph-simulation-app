@@ -13,11 +13,11 @@
     </v-app-bar>
 
     <v-main>
-      <div class="watermark">
+      <!-- <div class="watermark">
         <pre>  </pre>
         <pre> PSPH2020  PSPH2020  PSPH2020 </pre>
         <pre> PSPH2020  PSPH2020  PSPH2020 </pre>
-      </div>
+      </div> -->
 
       <!-- App Settings -->
       <v-navigation-drawer
@@ -154,7 +154,7 @@
                       class="mt-2 ml-2"
                       v-model="settings.particleSimulation.duration"
                       dense
-                      min="5"
+                      min="1"
                       max="10"
                       hide-details
                       :thumb-size="20"
@@ -482,73 +482,6 @@
         <span v-else>Start Simulation</span>
       </v-tooltip>
 
-      <!-- Chips -->
-      <v-chip
-        class="ma-2"
-        color="green"
-        text-color="white"
-        style="position: absolute; top: 120px; left: 220px;"
-      >
-        <v-avatar
-          left
-          class="green darken-4"
-        >
-          1
-        </v-avatar>
-        Air Filtration Process
-      </v-chip>
-      <!-- <v-chip
-        style="position: absolute; top: 120px; left: 180px;"
-      >
-        Phase 1 : Air Filtration Process
-      </v-chip> -->
-      <v-chip
-        class="ma-2"
-        color="green"
-        text-color="white"
-        style="position: absolute; top: 40px; left: 360px;"
-      >
-        <v-avatar
-          left
-          class="green darken-4"
-        >
-          2
-        </v-avatar>
-        Humidification Process
-      </v-chip>
-      <!-- <v-chip
-        style="position: absolute; top: 40px; left: 320px;"
-      >
-        Phase 2 : Humidification Process
-      </v-chip> -->
-      <v-chip
-        class="ma-2"
-        color="green"
-        text-color="white"
-        style="position: absolute; top: 160px; left: 900px;"
-      >
-        <v-avatar
-          left
-          class="green darken-4"
-        >
-          3
-        </v-avatar>
-        Electrochemical Process
-      </v-chip>
-      <!-- <v-chip
-        style="position: absolute; top: 160px; right: 60px;"
-      >
-        Phase 3 : Electrochemical Process
-      </v-chip> -->
-      <v-chip
-        class="ma-2"
-        color="green"
-        text-color="white"
-        style="position: absolute; top: 260px; left: 1020px;"
-      >
-        Voltage Regulator
-      </v-chip>
-
       <v-container id="mainContent" class="px-0">
         
         
@@ -705,7 +638,7 @@ export default {
         particleSimulation: {
           label: 'Particle Simulation',
           speed: 100,
-          duration: 10,
+          duration: 2,
         },
         input: {
           label: 'Input Settings',
