@@ -154,7 +154,7 @@
                       class="mt-2 ml-2"
                       v-model="settings.particleSimulation.duration"
                       dense
-                      min="1"
+                      min="2"
                       max="10"
                       hide-details
                       :thumb-size="20"
@@ -554,7 +554,6 @@
 // import HelloWorld from './components/HelloWorld';
 // const width = window.innerWidth;
 // const height = 300;
-
 import SimulatorCanvas from './components/SimulatorCanvas';
 
 export default {
@@ -692,19 +691,72 @@ export default {
       ],
     }
   },
-
   methods: {
-    runSimulation: function(){
-      var i = 0;
+    runSimulation2(){
       let self = this;
-      let oldValPM25 = this.settings.input.pm25;
-      let oldValPM10 = this.settings.input.pm10;
-      let oldValHumidity = this.settings.input.humidity;
-      let oldValCO2 = this.settings.input.co2;
+      var i = 0;
+
+      // var p1Tolerance = (Math.round(Math.random()) * 2 - 1) * 0.01;
+      
+        let oldValPM25 = self.settings.input.pm25;
+        let oldValPM10 = self.settings.input.pm10;
+        let oldValHumidity = self.settings.input.humidity;
+        let oldValCO2 = self.settings.input.co2;
+
+      this.simulationInterval = setInterval(function(){
+
+        self.settings.input.pm25 = Math.random() * (self.settings.input.pm25) + (self.settings.input.pm25);
+        self.settings.input.pm10 = Math.random() * (oldValPM10 - 1) + (oldValPM10 - 1);
+        self.settings.input.humidity = Math.random() * (oldValHumidity - 1) + (oldValHumidity - 1);
+        self.settings.input.co2 = Math.random() * (oldValCO2 - 1) + (oldValCO2 - 1);
+
+        self.tableSettings.items.push({
+          logID: i,
+          CO2Before: self.simulationParameters[0].parameters[3].val,
+          CO2After: self.simulationParameters[2].parameters[3].val,
+          humidityBefore: self.simulationParameters[0].parameters[2].val,
+          humidityAfter: self.simulationParameters[2].parameters[2].val,
+          powerOutput: self.simulationParameters[3].parameters[0].val
+        });
+        i++;
+        console.log(JSON.stringify(
+          {
+            'logID' : i, 
+            'PM25' : {
+              'oldValue' : oldValPM25, 
+              'newValue' : self.settings.input.pm25
+            }, 
+            'PM10' : {
+              'oldValue' : oldValPM10, 
+              'newValue' : self.settings.input.pm10
+            }, 
+            'Hum' : {
+              'oldValue' : oldValHumidity, 
+              'newValue' : self.settings.input.humidity
+            }, 
+            'CO2' : {
+              'oldValue' : oldValCO2, 
+              'newValue' : self.settings.input.co2
+            },
+          })
+        );
+      }, 1000);
+    },
+    runSimulation: function(){
+      let self = this;
+      var i = 0;
+
+      // var p1Tolerance = (Math.round(Math.random()) * 2 - 1) * 0.01;
+      let oldValPM25 = self.settings.input.pm25;
+      let oldValPM10 = self.settings.input.pm10;
+      let oldValHumidity = self.settings.input.humidity;
+      let oldValCO2 = self.settings.input.co2;
 
       this.simulationInterval = setInterval(function(){
         
-        self.settings.input.pm25 = (Math.round(Math.random()) * oldValPM25);
+        
+
+        self.settings.input.pm25 = Math.random() * (oldValPM25 - (oldValPM25 + 1)) + (oldValPM25 + 1);
         self.settings.input.pm10 = (Math.round(Math.random()) * oldValPM10);
         self.settings.input.humidity = (Math.round(Math.random()) * oldValHumidity);
         self.settings.input.co2 = (Math.round(Math.random()) * oldValCO2);
@@ -718,8 +770,35 @@ export default {
           powerOutput: self.simulationParameters[3].parameters[0].val
         });
         i++;
-        console.log(i, oldValPM25);
+        console.log(JSON.stringify(
+          {
+            'logID' : i, 
+            'PM25' : {
+              'oldValue' : oldValPM25, 
+              'newValue' : self.settings.input.pm25
+            }, 
+            'PM10' : {
+              'oldValue' : oldValPM10, 
+              'newValue' : self.settings.input.pm10
+            }, 
+            'Hum' : {
+              'oldValue' : oldValHumidity, 
+              'newValue' : self.settings.input.humidity
+            }, 
+            'CO2' : {
+              'oldValue' : oldValCO2, 
+              'newValue' : self.settings.input.co2
+            },
+          })
+        );
       }, 1000);
+    }
+  },
+  computed: {
+    p1p25(){
+      let tolerance = (Math.round(Math.random()) * 2 - 1) * 0.01;
+      let p1 = this.settings.input.pm25 * ( 1 + tolerance );
+      return p1;
     }
   },
   watch: {
@@ -772,7 +851,7 @@ export default {
     simulationControl: function(newVal){
       if (newVal === true){
         this.tableSettings.items = [];
-        this.runSimulation();
+        this.runSimulation2();
       }
       else {
         clearInterval(this.simulationInterval);

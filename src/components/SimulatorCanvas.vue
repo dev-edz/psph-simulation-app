@@ -140,7 +140,7 @@
 
     <!-- Phase 1 Label -->
     <v-chip
-        class="ma-2"
+        class="ma-2 elevation-4"
         color="green"
         text-color="white"
         style="position: absolute; top: 120px; left: 80px;"
@@ -156,7 +156,7 @@
 
     <!-- Phase 2 Label -->
     <v-chip
-        class="ma-2"
+        class="ma-2 elevation-4"
         color="green"
         text-color="white"
         style="position: absolute; top: 40px; left: 240px;"
@@ -172,7 +172,7 @@
 
     <!-- Phase 3 Label -->
     <v-chip
-        class="ma-2"
+        class="ma-2 elevation-4"
         color="green"
         text-color="white"
         style="position: absolute; top: 160px; left: 760px;"
@@ -188,7 +188,7 @@
 
     <!-- Regulator Label -->
     <v-chip
-        class="ma-2"
+        class="ma-2 elevation-4"
         color="green"
         text-color="white"
         style="position: absolute; top: 240px; left: 840px;"
@@ -792,10 +792,16 @@ export default {
                         shadowBlur: 2,
                         easing: Konva.Easings.EaseInOut,
                         onFinish: function () {
-                            self.tweens1.forEach( tween => {
-                                tween.reset();
-                                tween.play();
-                            });
+                            if (!self.runSimulation){
+                                this.reset();
+                            }
+                            else{
+                                console.log('running tween1');
+                                self.tweens1.forEach( tween => {
+                                    tween.reset();
+                                    tween.play();
+                                });
+                            }
                         },
                     }),
                 );
@@ -814,6 +820,9 @@ export default {
                 });
             } else {
                 this.tweens1.forEach( tween => {
+                    tween.finish();
+                });
+                this.tweens2.forEach( tween => {
                     tween.finish();
                 });
             }
