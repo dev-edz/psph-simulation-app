@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
-import store from './store'
 import vuetify from './plugins/vuetify'
 import VueKonva from 'vue-konva'
 import JsonExcel from 'vue-json-excel'
@@ -15,8 +13,6 @@ Vue.component("downloadExcel", JsonExcel);
 gsap.registerPlugin(MotionPathPlugin);
 
 new Vue({
-  router,
-  store,
   vuetify,
   JsonExcel,
   render: h => h(App)

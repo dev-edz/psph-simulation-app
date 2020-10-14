@@ -52,6 +52,24 @@
                 }">
             </v-circle>
 
+            <!-- Particles 4 -->
+            <v-circle 
+                ref="molecules4"
+                v-for="(molecule, index) in particles4"
+                :key="'pFour' + index"
+                :config="{
+                    x: molecule.x,
+                    y: molecule.y,
+                    id: index,
+                    radius: molecule.radius,
+                    opacity: 1,
+                    draggable: true,
+                    fill: 'yellow',
+                    shadowColor: '#6f6f49',
+                    shadowBlur: 2,
+                }">
+            </v-circle>
+
            
             <v-shape
                 id="p3-innerbox"
@@ -140,7 +158,7 @@
 
     <!-- Phase 1 Label -->
     <v-chip
-        class="ma-2"
+        class="ma-2 elevation-2"
         color="green"
         text-color="white"
         style="position: absolute; top: 120px; left: 80px;"
@@ -156,7 +174,7 @@
 
     <!-- Phase 2 Label -->
     <v-chip
-        class="ma-2"
+        class="ma-2 elevation-2"
         color="green"
         text-color="white"
         style="position: absolute; top: 40px; left: 240px;"
@@ -172,7 +190,7 @@
 
     <!-- Phase 3 Label -->
     <v-chip
-        class="ma-2"
+        class="ma-2 elevation-2"
         color="green"
         text-color="white"
         style="position: absolute; top: 160px; left: 760px;"
@@ -188,7 +206,7 @@
 
     <!-- Regulator Label -->
     <v-chip
-        class="ma-2"
+        class="ma-2 elevation-2"
         color="green"
         text-color="white"
         style="position: absolute; top: 240px; left: 840px;"
@@ -200,9 +218,8 @@
 </template>
 
 <script>
+
 import Konva from 'konva';
-// import { gsap, TweenLite, TimelineLite, Power4 } from "gsap";
-// import { gsap } from 'gsap';
 export default {
     props: {
         width: Number,
@@ -221,6 +238,7 @@ export default {
             particles: [],
             particles2: [],
             particles3: [],
+            particles4: [],
             wire: {
                 sceneFunc: function(context) {
                     let x = 658, 
@@ -688,6 +706,8 @@ export default {
             },
             tweens1: [],
             tweens2: [],
+            tweens3: [],
+            tweens4: [],
         }
     },
     watch: {
@@ -774,7 +794,7 @@ export default {
                 this.tweens2 = [];
                 console.log('tweens destroyed...')
             }
-            for (let n = 0; n <= this.particle.count - 1; n++){
+            for (let n = 0; n <= this.particles2.length - 1; n++){
                 let obj = this.$refs["molecules2"][n].getNode();
                 this.tweens2.push(
                     new Konva.Tween({
@@ -792,6 +812,81 @@ export default {
                         shadowBlur: 2,
                         easing: Konva.Easings.EaseInOut,
                         onFinish: function () {
+                            console.log('running tween3');
+                            self.tweens3.forEach( tween => {
+                                tween.reset();
+                                tween.play();
+                            });
+                        },
+                    }),
+                );
+            }
+        },
+        createTweens3(){
+            
+            if (!this.tweens3.length == 0) {
+                this.tweens3.forEach(tween => {
+                    tween.destroy();
+                });
+                this.tweens3 = [];
+                console.log('tweens destroyed...')
+            }
+            for (let n = 0; n <= this.particles3.length - 1; n++){
+                let obj = this.$refs["molecules3"][n].getNode();
+                this.tweens3.push(
+                    new Konva.Tween({
+                        node: obj,
+                        duration: self.duration,
+                        // x: Math.floor(Math.random() * 1000) * Math.sin((100 * Math.PI) / 10000) + obj.getX(),
+                        // y: Math.floor(Math.random() * 1000) * Math.sin((100 * Math.PI) / 10000) + obj.getY(),
+                        x: (Math.random() * 50) + 660,
+                        y: 2 * (Math.random() * 40) + 220,
+                        opacity: 1,
+                        scaleX: 0.8,
+                        scaleY: 0.8,
+                        fill: '#adee2e',
+                        shadowColor: '#6f6f49',
+                        shadowBlur: 4,
+                        easing: Konva.Easings.EaseInOut,
+                        onFinish: function () {
+                            console.log('running tween4');
+                            self.tweens4.forEach( tween => {
+                                tween.reset();
+                                tween.play();
+                            });
+                        },
+                    }),
+                );
+            }
+        },
+        createTweens4(){
+            
+            if (!this.tweens4.length == 0) {
+                this.tweens4.forEach(tween => {
+                    tween.destroy();
+                });
+                this.tweens4 = [];
+                console.log('tweens destroyed...')
+            }
+            for (let n = 0; n <= this.particles4.length - 1; n++){
+                let obj = this.$refs["molecules4"][n].getNode();
+                this.tweens4.push(
+                    new Konva.Tween({
+                        node: obj,
+                        duration: self.duration,
+                        // x: Math.floor(Math.random() * 1000) * Math.sin((100 * Math.PI) / 10000) + obj.getX(),
+                        // y: Math.floor(Math.random() * 1000) * Math.sin((100 * Math.PI) / 10000) + obj.getY(),
+                        x: (Math.random() * 50) + 660,
+                        y: 2 * (Math.random() * 40) + 220,
+                        opacity: 1,
+                        scaleX: 0.8,
+                        scaleY: 0.8,
+                        fill: 'red',
+                        shadowColor: '#6f6f49',
+                        shadowBlur: 4,
+                        easing: Konva.Easings.EaseInOut,
+                        onFinish: function () {
+                            console.log('running tween1');
                             self.tweens1.forEach( tween => {
                                 tween.reset();
                                 tween.play();
@@ -801,21 +896,29 @@ export default {
                 );
             }
         },
-        createTween3(){
-
-        },
         testRun(state){
             if (state){
-                this.createTweens1();
-                this.createTweens2();
-                this.tweens1.forEach( tween => {
-                    tween.reset();
-                    tween.play();
-                });
+                // this.createTweens1();
+                // this.createTweens2();
+                // this.createTweens3();
+                // this.createTweens4();
+                // this.tweens1.forEach( tween => {
+                //     tween.reset();
+                //     tween.play();
+                // });
             } else {
-                this.tweens1.forEach( tween => {
-                    tween.finish();
-                });
+                // this.tweens1.forEach( tween => {
+                //     tween.finish();
+                // });
+                // this.tweens2.forEach( tween => {
+                //     tween.finish();
+                // });
+                // this.tweens3.forEach( tween => {
+                //     tween.finish();
+                // });
+                // this.tweens4.forEach( tween => {
+                //     tween.finish();
+                // });
             }
         },
         runMotionPath(){
@@ -847,16 +950,34 @@ export default {
                 radius: this.particle.radius
             });
 
+            
+        }
+
+        for (let n = 0; n < (this.particle.count * 2); n++){
+
             this.particles2.push({
-                x: (Math.random() * 20) + 380,
-                y: 2 * (Math.random() * 15) + 190,
-                radius: this.particle.radius
+                x: (Math.random() * 20) + 400,
+                y: 2 * (Math.random() * 15) + 180,
+                radius: Math.floor(this.particle.radius / 2)
             });
 
+        }
+
+        for (let n = 0; n < (this.particle.count * 4); n++){
             this.particles3.push({
+                x: (Math.random() * 20) + 660,
+                y: 2 * (Math.random() * 10) + 200,
+                radius: Math.floor(this.particle.radius / 4),
+                // opacity: 1,
+            });
+        }
+
+        for (let n = 0; n < (this.particle.count * 4); n++){
+            this.particles4.push({
                 x: (Math.random() * 50) + 660,
                 y: 2 * (Math.random() * 40) + 220,
-                radius: this.particle.radius
+                radius: Math.floor(this.particle.radius / 4),
+                opacity: 1,
             });
         }
 

@@ -78,8 +78,8 @@
                       class="mt-2 ml-2"
                       v-model="settings.particle.radius"
                       dense
-                      min="4"
-                      max="10"
+                      min="8"
+                      max="12"
                       hide-details
                       :thumb-size="20"
                     >
@@ -556,7 +556,6 @@
 // const height = 300;
 
 import SimulatorCanvas from './components/SimulatorCanvas';
-
 export default {
   name: 'App',
 
@@ -630,7 +629,7 @@ export default {
         particle: {
           label: 'Particle/s',
           count: 6,
-          radius: 5,
+          radius: 8,
           xOffset: 150,
           yOffset: 250,
           dispersion: 5,
@@ -694,85 +693,98 @@ export default {
   },
 
   methods: {
-    runSimulation: function(){
-      var i = 0;
-      let self = this;
-      let oldValPM25 = this.settings.input.pm25;
-      let oldValPM10 = this.settings.input.pm10;
-      let oldValHumidity = this.settings.input.humidity;
-      let oldValCO2 = this.settings.input.co2;
+    testRun(){
+      let self = this; 
+      let i = 0, charge;
+      let p1pm25 = self.settings.input.pm25, p2pm25, p3pm25; 
+      let p1pm10 = self.settings.input.pm10, p2pm10, p3pm10;
+      let p1humid = self.settings.input.humidity, p2humid, p3humid;
+      let p1co2 = self.settings.input.co2, p2co2, p3co2;
 
       this.simulationInterval = setInterval(function(){
+
+        let signGenerator1 = (Math.round(Math.random()) * 2) - 1;
+
+        p1pm25 *= (1 + (signGenerator1 * 0.01));
+        p2pm25 = p1pm25 * (1 + (signGenerator1 * 0.03));
+        p3pm25 = p2pm25;
+
+        self.simulationParameters[0].parameters[0].val = p1pm25.toFixed(2);
+        self.simulationParameters[1].parameters[0].val = p2pm25.toFixed(2);
+        self.simulationParameters[2].parameters[0].val = p3pm25.toFixed(2);
+
+        p1pm10 *= (1 + (signGenerator1 * 0.01));
+        p2pm10 = p1pm10 * (1 + (signGenerator1 * 0.03));
+        p3pm10 = p2pm10;
+
+        self.simulationParameters[0].parameters[1].val = p1pm10.toFixed(2);
+        self.simulationParameters[1].parameters[1].val = p2pm10.toFixed(2);
+        self.simulationParameters[2].parameters[1].val = p3pm10.toFixed(2);
+
+        p1humid *= (1 + (signGenerator1 * 0.01));
+        p2humid = p1humid;
+        p3humid = p1humid * (1.3 + 1) + p2humid * (1 + (signGenerator1 * 0.03));
+
+        self.simulationParameters[0].parameters[2].val = p1humid.toFixed(2);
+        self.simulationParameters[1].parameters[2].val = p2humid.toFixed(2);
+        self.simulationParameters[2].parameters[2].val = p3humid.toFixed(2);
         
-        self.settings.input.pm25 = (Math.round(Math.random()) * oldValPM25);
-        self.settings.input.pm10 = (Math.round(Math.random()) * oldValPM10);
-        self.settings.input.humidity = (Math.round(Math.random()) * oldValHumidity);
-        self.settings.input.co2 = (Math.round(Math.random()) * oldValCO2);
+        p1co2 *= (1 + (signGenerator1 * 0.01));
+        p2co2 = p1co2;
+        p3co2 = p1co2 * (1.3 + 1) + p2co2 * (1 + (signGenerator1 * 0.03));
+
+        self.simulationParameters[0].parameters[3].val = p1co2.toFixed(2);
+        self.simulationParameters[1].parameters[3].val = p2co2.toFixed(2);
+        self.simulationParameters[2].parameters[3].val = p3co2.toFixed(2);
+
+        charge = (p3co2 * (0.1595016));
+
+        self.simulationParameters[3].parameters[0].val = charge.toFixed(2);
 
         self.tableSettings.items.push({
           logID: i,
-          CO2Before: self.simulationParameters[0].parameters[3].val,
-          CO2After: self.simulationParameters[2].parameters[3].val,
-          humidityBefore: self.simulationParameters[0].parameters[2].val,
-          humidityAfter: self.simulationParameters[2].parameters[2].val,
-          powerOutput: self.simulationParameters[3].parameters[0].val
+          CO2Before: p1co2,
+          CO2After: p3co2,
+          humidityBefore: p1humid,
+          humidityAfter: p3humid,
+          powerOutput: charge
         });
-        i++;
-        console.log(i, oldValPM25);
+
+        console.log(
+          JSON.stringify({
+            'pm25' : {
+              'p1' : p1pm25.toFixed(2),
+              'p2' : p2pm25.toFixed(2),
+              'p3' : p3pm25.toFixed(2),
+            },
+            'pm10' : {
+              'p1' : p1pm10.toFixed(2),
+              'p2' : p2pm10.toFixed(2),
+              'p3' : p3pm10.toFixed(2),
+            },
+            'humid' : {
+              'p1' : p1humid.toFixed(2),
+              'p2' : p2humid.toFixed(2),
+              'p3' : p3humid.toFixed(2),
+            },
+            'co2' : {
+              'p1' : p1co2.toFixed(2),
+              'p2' : p2co2.toFixed(2),
+              'p3' : p3co2.toFixed(2),
+            },
+            'charge' : charge,
+          })
+        );
+
+      i++;
       }, 1000);
-    }
+    },
   },
   watch: {
-    'settings.input.pm25' : function(newVal){
-      // random function pra mag generate ng (+- 1% => 0.01) for phase 1
-      var p1Tolerance = (Math.round(Math.random()) * 2 - 1) * 0.01;
-      // phase 1 value of PM25
-      var p1 = newVal + (p1Tolerance * newVal);
-      // phase 2 value of PM25
-      var p2 = p1 + (0.03 * p1);
-      // Display computed values of phase 1 - 2 of PM25
-      // phase 1 of PM25
-      this.simulationParameters[0].parameters[0].val = p1.toFixed(2);
-      // phase 2 of PM25
-      this.simulationParameters[1].parameters[0].val = p2.toFixed(2);
-      // phase 3 of PM25 same as phase 2
-      this.simulationParameters[2].parameters[0].val = p2.toFixed(2);
-      // Display resulting value of the formula for Q(charge)
-      this.simulationParameters[3].parameters[0].val = (this.simulationParameters[2].parameters[3].val * (0.1595016)).toFixed(2);
-    },
-    'settings.input.pm10' : function(newVal){
-      var p1Tolerance = (Math.round(Math.random()) * 2 - 1) * 0.01;
-      var p1 = newVal + (p1Tolerance * newVal);
-      var p2 = p1 + (0.03 * p1);
-      this.simulationParameters[0].parameters[1].val = p1.toFixed(2);
-      this.simulationParameters[1].parameters[1].val = p2.toFixed(2);
-      this.simulationParameters[2].parameters[1].val = p2.toFixed(2);
-      this.simulationParameters[3].parameters[0].val = (this.simulationParameters[2].parameters[3].val * (0.1595016)).toFixed(2);
-    },
-    'settings.input.humidity' : function(newVal){
-      var p1Tolerance = (Math.round(Math.random()) * 2 - 1) * 0.01;
-      var p1 = newVal + (p1Tolerance * newVal);
-      var p2Tolerance =(Math.round(Math.random()) * 2 - 1) * 0.03
-      var p2 = p1 + (1.3 * p1) + (p2Tolerance * p1);
-      this.simulationParameters[0].parameters[2].val = p1.toFixed(2);
-      this.simulationParameters[1].parameters[2].val = p1.toFixed(2);
-      this.simulationParameters[2].parameters[2].val = p2.toFixed(2);
-      this.simulationParameters[3].parameters[0].val = (this.simulationParameters[2].parameters[3].val * (0.1595016)).toFixed(2);
-    },
-    'settings.input.co2' : function(newVal){
-      var p1Tolerance = (Math.round(Math.random()) * 2 - 1) * 0.01;
-      var p1 = newVal + (p1Tolerance * newVal);
-      var p2Tolerance =(Math.round(Math.random()) * 2 - 1) * 0.03
-      var p2 = p1 + (1.3 * p1) + (p2Tolerance * p1);
-      this.simulationParameters[0].parameters[3].val = p1.toFixed(2);
-      this.simulationParameters[1].parameters[3].val = p1.toFixed(2);
-      this.simulationParameters[2].parameters[3].val = p2.toFixed(2);
-      this.simulationParameters[3].parameters[0].val = (this.simulationParameters[2].parameters[3].val * (0.1595016)).toFixed(2);
-    },
     simulationControl: function(newVal){
       if (newVal === true){
         this.tableSettings.items = [];
-        this.runSimulation();
+        this.testRun();
       }
       else {
         clearInterval(this.simulationInterval);
