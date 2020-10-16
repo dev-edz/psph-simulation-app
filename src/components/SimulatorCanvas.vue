@@ -823,7 +823,7 @@ export default {
             }
         },
         createTweens3(){
-            
+            let self = this;
             if (!this.tweens3.length == 0) {
                 this.tweens3.forEach(tween => {
                     tween.destroy();
@@ -850,7 +850,7 @@ export default {
                         easing: Konva.Easings.EaseInOut,
                         onFinish: function () {
                             console.log('running tween4');
-                            self.tweens1.forEach( tween => {
+                            self.tweens4.forEach( tween => {
                                 tween.reset();
                                 tween.play();
                             });
@@ -860,7 +860,7 @@ export default {
             }
         },
         createTweens4(){
-            
+            let self = this;
             if (!this.tweens4.length == 0) {
                 this.tweens4.forEach(tween => {
                     tween.destroy();
@@ -901,7 +901,7 @@ export default {
                 this.createTweens1();
                 this.createTweens2();
                 this.createTweens3();
-                // this.createTweens4();
+                this.createTweens4();
                 this.tweens1.forEach( tween => {
                     tween.reset();
                     tween.play();
@@ -916,9 +916,9 @@ export default {
                 this.tweens3.forEach( tween => {
                     tween.finish();
                 });
-                // this.tweens4.forEach( tween => {
-                //     tween.finish();
-                // });
+                this.tweens4.forEach( tween => {
+                    tween.finish();
+                });
             }
         },
         runMotionPath(){
