@@ -706,40 +706,40 @@ export default {
         let signGenerator1 = (Math.round(Math.random()) * 2) - 1;
 
         p1pm25 *= (1 + (signGenerator1 * 0.01));
-        p2pm25 = p1pm25 * (1 + (signGenerator1 * 0.03));
+        p2pm25 = p1pm25 * 0.03;
         p3pm25 = p2pm25;
 
-        self.simulationParameters[0].parameters[0].val = p1pm25.toFixed(2);
-        self.simulationParameters[1].parameters[0].val = p2pm25.toFixed(2);
-        self.simulationParameters[2].parameters[0].val = p3pm25.toFixed(2);
+        self.simulationParameters[0].parameters[0].val = p1pm25.toFixed(4);
+        self.simulationParameters[1].parameters[0].val = p2pm25.toFixed(4);
+        self.simulationParameters[2].parameters[0].val = p3pm25.toFixed(4);
 
         p1pm10 *= (1 + (signGenerator1 * 0.01));
-        p2pm10 = p1pm10 * (1 + (signGenerator1 * 0.03));
+        p2pm10 = p1pm10 * 0.03;
         p3pm10 = p2pm10;
 
-        self.simulationParameters[0].parameters[1].val = p1pm10.toFixed(2);
-        self.simulationParameters[1].parameters[1].val = p2pm10.toFixed(2);
-        self.simulationParameters[2].parameters[1].val = p3pm10.toFixed(2);
+        self.simulationParameters[0].parameters[1].val = p1pm10.toFixed(4);
+        self.simulationParameters[1].parameters[1].val = p2pm10.toFixed(4);
+        self.simulationParameters[2].parameters[1].val = p3pm10.toFixed(4);
 
         p1humid *= (1 + (signGenerator1 * 0.01));
         p2humid = p1humid;
         p3humid = p1humid * (1.3 + 1) + p2humid * (1 + (signGenerator1 * 0.03));
 
-        self.simulationParameters[0].parameters[2].val = p1humid.toFixed(2);
-        self.simulationParameters[1].parameters[2].val = p2humid.toFixed(2);
-        self.simulationParameters[2].parameters[2].val = p3humid.toFixed(2);
+        self.simulationParameters[0].parameters[2].val = p1humid.toFixed(4);
+        self.simulationParameters[1].parameters[2].val = p2humid.toFixed(4);
+        self.simulationParameters[2].parameters[2].val = p3humid.toFixed(4);
         
         p1co2 *= (1 + (signGenerator1 * 0.01));
         p2co2 = p1co2;
-        p3co2 = p1co2 * (1.3 + 1) + p2co2 * (1 + (signGenerator1 * 0.03));
+        p3co2 = p2co2 * 1.3;
 
-        self.simulationParameters[0].parameters[3].val = p1co2.toFixed(2);
-        self.simulationParameters[1].parameters[3].val = p2co2.toFixed(2);
-        self.simulationParameters[2].parameters[3].val = p3co2.toFixed(2);
+        self.simulationParameters[0].parameters[3].val = p1co2.toFixed(4);
+        self.simulationParameters[1].parameters[3].val = p2co2.toFixed(4);
+        self.simulationParameters[2].parameters[3].val = p3co2.toFixed(4);
 
         charge = (p3co2 * (0.1595016));
 
-        self.simulationParameters[3].parameters[0].val = charge.toFixed(2);
+        self.simulationParameters[3].parameters[0].val = charge.toFixed(4);
 
         self.tableSettings.items.push({
           logID: i,

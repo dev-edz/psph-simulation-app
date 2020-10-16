@@ -850,7 +850,7 @@ export default {
                         easing: Konva.Easings.EaseInOut,
                         onFinish: function () {
                             console.log('running tween4');
-                            self.tweens4.forEach( tween => {
+                            self.tweens1.forEach( tween => {
                                 tween.reset();
                                 tween.play();
                             });
@@ -898,24 +898,24 @@ export default {
         },
         testRun(state){
             if (state){
-                // this.createTweens1();
-                // this.createTweens2();
-                // this.createTweens3();
+                this.createTweens1();
+                this.createTweens2();
+                this.createTweens3();
                 // this.createTweens4();
-                // this.tweens1.forEach( tween => {
-                //     tween.reset();
-                //     tween.play();
-                // });
+                this.tweens1.forEach( tween => {
+                    tween.reset();
+                    tween.play();
+                });
             } else {
-                // this.tweens1.forEach( tween => {
-                //     tween.finish();
-                // });
-                // this.tweens2.forEach( tween => {
-                //     tween.finish();
-                // });
-                // this.tweens3.forEach( tween => {
-                //     tween.finish();
-                // });
+                this.tweens1.forEach( tween => {
+                    tween.finish();
+                });
+                this.tweens2.forEach( tween => {
+                    tween.finish();
+                });
+                this.tweens3.forEach( tween => {
+                    tween.finish();
+                });
                 // this.tweens4.forEach( tween => {
                 //     tween.finish();
                 // });
