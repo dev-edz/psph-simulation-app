@@ -129,29 +129,6 @@
                   <v-col>
                     <v-slider
                       class="mt-2 ml-2"
-                      v-model="settings.particleSimulation.speed"
-                      dense
-                      min="50"
-                      max="200"
-                      hide-details
-                      :thumb-size="20"
-                    >
-                      
-                    </v-slider>
-                  </v-col>
-                  <v-col cols="2">
-                    <div class="mt-3 caption text-center">{{ settings.particleSimulation.speed }}</div>
-                  </v-col>
-                </v-row>
-
-                <!-- Simulation Duration -->
-                <v-row dense style="height: 50px;">
-                  <v-col cols="3">
-                    <v-subheader class="pl-0">Duration</v-subheader>
-                  </v-col>
-                  <v-col>
-                    <v-slider
-                      class="mt-2 ml-2"
                       v-model="settings.particleSimulation.duration"
                       dense
                       min="1"
@@ -590,7 +567,7 @@ export default {
             value: 'CO2Before'
           },
           {
-            text: 'Humidity Ratio before Dehumidification',
+            text: 'Humidity Ratio before Humidification',
             align: 'center',
             sortable: false,
             value: 'humidityBefore'
@@ -602,13 +579,13 @@ export default {
             value: 'CO2After'
           },
           {
-            text: 'Humidity Ratio after Dehumidification',
+            text: 'Humidity Ratio after Humidification',
             align: 'center',
             sortable: false,
             value: 'humidityAfter'
           },
           {
-            text: 'Power Output (kW)',
+            text: 'Power Output (Ah)',
             align: 'center',
             sortable: false,
             value: 'powerOutput'
@@ -636,7 +613,6 @@ export default {
         },
         particleSimulation: {
           label: 'Particle Simulation',
-          speed: 100,
           duration: 2,
         },
         input: {
@@ -723,7 +699,7 @@ export default {
 
         p1humid *= (1 + (signGenerator1 * 0.01));
         p2humid = p1humid;
-        p3humid = p1humid * (1.3 + 1) + p2humid * (1 + (signGenerator1 * 0.03));
+        p3humid = p2humid * 1.3;
 
         self.simulationParameters[0].parameters[2].val = p1humid.toFixed(4);
         self.simulationParameters[1].parameters[2].val = p2humid.toFixed(4);
