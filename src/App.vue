@@ -561,7 +561,7 @@ export default {
             value: 'logID'
           },
           {
-            text: 'CO2 content before capture (ppm)',
+            text: 'CO2 content before capture (gram)',
             align: 'center',
             sortable: false,
             value: 'CO2Before'
@@ -573,7 +573,7 @@ export default {
             value: 'humidityBefore'
           },
           {
-            text: 'CO2 content after capture (ppm)',
+            text: 'CO2 content after capture (gram)',
             align: 'center',
             sortable: false,
             value: 'CO2After'
